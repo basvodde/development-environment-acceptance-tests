@@ -1,0 +1,33 @@
+*** Settings ***
+Library           SeleniumLibrary
+
+*** Test Cases ***
+Google Odd-e
+    [Setup]    Prepare Browser Test
+    Go to Google
+    Search for    Odd-e
+    First hit matches    www.odd-e.com
+    [Teardown]    Cleanup Browser Test
+
+*** Keywords ***
+Go to Google
+    Open Browser    http://www.google.com
+
+Search for
+    [Arguments]    ${search_string}
+    Input Text    xpath=id('gbqfq')    ${search_string}
+    Click Button    gbqfb    don't wait
+    Wait Until Page Contains Element    xpath=id('resultStats')
+
+First hit matches
+    [Arguments]    ${match}
+    ${url}=    Get Text    xpath=id('rso')/x:li[1]/x:div/x:div[3]/x:div[1]/x:cite
+    Should Contain    ${url}    ${match}
+
+Prepare Browser Test
+    Start Selenium Server
+    Set Selenium Timeout    20
+
+Cleanup Browser Test
+    Close All Browsers
+    Stop Selenium Server
